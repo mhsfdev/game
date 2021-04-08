@@ -2,14 +2,14 @@ class Board :
     
     def __init__(self,size = None):
         self.size = size
-        files, ranks = self.board_plan() 
+        files, ranks = self._board_plan() 
         self.board = [None] + [{letter : None for letter in files}  for _ in ranks]
 
-    def board_plan(self): #creates file and rank designations as iterables
+    def _board_plan(self): #creates file and rank designations as iterables
         return ("ABCDEFGH"[:self.size],range(1,self.size+1))
-        
+
     def _parse_position(self, position):
-        files, ranks = self.board_plan()
+        files, ranks = self._board_plan()
         rank_text = position[-1]
 
         try:
@@ -39,13 +39,13 @@ class Board :
         if self.board[rank][file] != None:
             raise ValueError (f'Position {position} is already taken')
         
-        self.board[rank][file] = piece
+        self.board[rank][file] = piece # in datastructure is the board transposed 
 
     def visualize(self):
         """
         prints board in text mode
         """
-        files , ranks = self.board_plan()
+        files , ranks = self._board_plan()
         print()
         print(f'Board {self.size}x{self.size}')
         print('  +','-'*(len(files)*2+1),'+', sep='' )  #topline
