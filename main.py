@@ -13,7 +13,6 @@ class Board :
             rank = int(rank_text)
         except ValueError :
             raise ValueError (f' rank {rank} not number ')
-        
         if rank not in ranks:
             raise ValueError (f'rank {rank} outside the board')
         
@@ -65,7 +64,8 @@ class Board :
             print (' ',file,sep='', end='')
         print()
 
-
+    def move(self, from_position, to_position):
+        pass
 
 
     def board_plan(self): #creates file and rank designations as iterables
