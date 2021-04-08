@@ -25,6 +25,12 @@ class Board :
         return  file,rank
 
     def place_item(self, piece, position):
+        """ 
+        Positions piece on the designated position
+        args :
+            piece = item to be placed
+            position = file, rank notation 'A1'
+        """
         
         file, rank = self._parse_position(position)
         
@@ -32,6 +38,33 @@ class Board :
             raise ValueError (f'Position {position} is already taken')
         
         self.board[rank][file] = piece
+
+    def visualize(self):
+        """
+        prints board in text mode
+        """
+        files , ranks = self.board_plan()
+        print()
+        print(f'Board {self.size}x{self.size}')
+        print('  +','-'*(len(files)*2+1),'+', sep='' )  #topline
+
+        for rank in reversed(ranks):
+            print (rank,'| ', end = '')
+            for file in files:
+               
+                if self.board[rank][file] == None:
+                    print ('  ',end = '')
+                else:
+                    print (self.board[rank][file],' ', sep='',end = '')
+
+            print('|') #right line
+        
+        print('  +','-'*(len(files)*2+1),'+', sep='' )  #bottomline
+        print('   ', end='')
+        for file in files:
+            print (' ',file,sep='', end='')
+        print()
+
 
 
 
@@ -62,10 +95,10 @@ for line in reversed(range(1,size+1)):
     print(f'{line}: {b.board[line]}')
 
 
-b.place_item( Piece('b'), 'B2')
+b.place_item( Piece('b'), 'A1')
+b.place_item( Piece('b'), 'B1')
 
-for line in reversed(range(1,size+1)):
-    print(f'{line}: {b.board[line]}')
+b.visualize()
 
             
 
