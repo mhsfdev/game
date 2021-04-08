@@ -5,6 +5,9 @@ class Board :
         files, ranks = self.board_plan() 
         self.board = [None] + [{letter : None for letter in files}  for _ in ranks]
 
+    def board_plan(self): #creates file and rank designations as iterables
+        return ("ABCDEFGH"[:self.size],range(1,self.size+1))
+        
     def _parse_position(self, position):
         files, ranks = self.board_plan()
         rank_text = position[-1]
@@ -68,8 +71,7 @@ class Board :
         pass
 
 
-    def board_plan(self): #creates file and rank designations as iterables
-        return ("ABCDEFGH"[:self.size],range(1,self.size+1))
+    
 
 
 class Piece:
