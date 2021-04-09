@@ -86,13 +86,24 @@ class Board :
         """
         def _within_reach(piece):# inner method deciding if new place is in the reach
             return True
-        def _parse_vector(f_file, f_rank, t_fie, t_rank):#computing vector of movement and direction forward{ff}, backward(bb), left(ll), right(rr) and sideways combinations fr, bl, etc...
-            vector, direction = None
-            pass
-            return (vector, direction)
+        def _parse_vector(f_file, f_rank, t_file, t_rank):
+            """
+            computing vector of movement as tuple
+            A1 is on left bottom corner
+            """
+            f_file, f_rank = self._parse_position(from_position)
+            files , _ = self._board_plan()
+            t_file = files.find(t_file)# geting positions in ranks
+            f_file = files.find(f_file)# dtto for from rank
+
+            _fw_vector = t_file - f_file
+            _side_vector = t_rank - f_rank                
+           
+            return (_fw_vector,_side_vector)
 
         from_file, from_rank = self._parse_position(from_position)
         to_file, to_rank = self._parse_position(to_position)
+        vector =_parse_vector(from_file, from_rank, to_file, to_rank)
 
         if self.board[from_rank][from_file] == None:
             raise ValueError(f'there is nothing on {from_position} position on the board')
@@ -102,7 +113,7 @@ class Board :
         if _within_reach(_item):
             self.board[from_rank][from_file]=None
             self.board[to_rank][to_file]=_item
-            return('move completed')
+            return(f'move completed with move vector : {vector}')#!!! doesnot work
         else:
             return(f'move out of reach for the piece on {from_position} position')
             
@@ -139,8 +150,12 @@ for line in reversed(range(1,size+1)):
 
 
 b.place_item( Piece('b'), 'A1')
+
 b.place_item( Piece('b'), 'C1')
 
+b.visualize()
+
+b.move('a1','c2')
 b.visualize()
 
             
