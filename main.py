@@ -68,6 +68,13 @@ class Board :
         print()
 
     def move(self, from_position, to_position):
+        """ 
+        method processing the movement of the Piece on the boar.
+
+        checks movement abilities of the Piece on the from position
+        checks to position to be on the board, within reach of the Piece
+        type of the movement - push or take
+        """
         pass
 
 
@@ -98,7 +105,7 @@ for line in reversed(range(1,size+1)):
 
 
 b.place_item( Piece('b'), 'A1')
-b.place_item( Piece('b'), 'B1')
+b.place_item( Piece('b'), 'C1')
 
 b.visualize()
 
