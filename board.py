@@ -12,7 +12,7 @@ class Board :
         dictionary keys represent file designations A, B... size up to H
         """
         if size>8:
-            raise ValueError(f'Board max is 8')
+            raise ValueError('Board max is 8')
         self.size = size
 
         files, ranks = self._board_plan() 
@@ -22,22 +22,65 @@ class Board :
         return ("ABCDEFGH"[:self.size],range(1,self.size+1))
 
     def _parse_position(self, position): # filerank notation A1
+        """
+        checks if position is on the board and returns tuple (File, rank)
+        args = position in filerank notation
+        """
+        if self.is_on_board(position): 
+            return  position.upper()[0],int(position[-1])
+        else:
+            raise ValueError(f'Position {position} not valid')
+    
+    def is_on_board(self, position):
+        """
+        boolean, checks if position is on the board
+        args:
+          string / position in filerank notation
+        """
         files, ranks = self._board_plan()
-        rank_text = position[-1]
-
+        rank_text = position[1]
+        file = position.upper()[0] # parse file designator , make it upper in case lower case is used
+        if len(position)!=2:
+            return False
+        
         try:
             rank = int(rank_text)
         except ValueError :
-            raise ValueError (f' rank {rank} not number ')
+            return False
+        
         if rank not in ranks:
-            raise ValueError (f'rank {rank} outside the board')
-        
-        file = position.upper()[0] # parse file designator , make it upper in case lower case is used
-
+            return False
+             
         if file not in files :
-            raise ValueError (f'file {file} outside the board')
+            return False
         
-        return  file,rank
+        return True
+    
+    def is_free(self, position):
+        """ boolean
+        returns True if position on Board is not None = taken by object
+        arg - posiiton in filerank notation
+        """
+        
+        file, rank = self._parse_position(position)
+        
+        if self.board[rank][file] != None:
+            return False
+        else :
+            return True
+    
+    def get_item(self, position):
+        """
+        returns whatever is on the position (arg)on the board
+        if there is nothing, method returns None
+        """
+        file, rank = self._parse_position(position)
+        if not self.is_free(position):
+            return self.board[rank][file]
+        else:
+            return None
+
+       
 
     def place_item(self, piece, position):
         """ 
@@ -46,13 +89,11 @@ class Board :
             piece = item to be placed
             position = file, rank notation 'A1'
         """
-        
         file, rank = self._parse_position(position)
-        
-        if self.board[rank][file] != None:
-            raise ValueError (f'Position {position} is already taken')
-        
-        self.board[rank][file] = piece # in datastructure is the board transposed 
+        if self.is_free(position):
+            self.board[rank][file] = piece # in datastructure is the board transposed 
+        else:
+            raise ValueError(f'Position {position} is not free')
 
     def visualize(self):
         """
