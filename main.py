@@ -13,9 +13,20 @@ class Piece:
             return 'X'
         elif self.color.lower() =='w':
             return 'O'
+    def same_color(self, piece):
+        try :
+            piece.color
+        except AttributeError('not valid piece'):
+            return False
+
+        return self.color == piece.color
+
+        
 
 class Pawn(Piece):
     pass
+
+
     
         
 
