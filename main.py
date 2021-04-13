@@ -33,9 +33,9 @@ class Player:
         if color not in ['b','w']:
             raise ValueError(f'Color {color} is not valid')
     
-    def set_pieces(self, piece, positions):
+    def set_pieces(self, positions):
         for position in positions:
-            self.pieces.append([piece, position])
+            self.pieces.append( position)
     
     def remove_piece(self, position): # find record with position and remove it from the list
         pass
