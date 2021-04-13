@@ -25,6 +25,23 @@ class Piece:
 
 class Pawn(Piece):
     pass
+class Player:
+
+    def __init__(self, name, color):
+        self.name = name
+        self.pieces = []
+        if color not in ['b','w']:
+            raise ValueError(f'Color {color} is not valid')
+    
+    def set_pieces(self, piece, positions):
+        for position in positions:
+            self.pieces.append([piece, position])
+    
+    def remove_piece(self, position): # find record with position and remove it from the list
+        pass
+
+
+
 
 
     
