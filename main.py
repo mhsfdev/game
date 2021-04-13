@@ -35,15 +35,15 @@ b=Board(size)
 p_b = Pawn('b')
 p_w = Pawn('w')
 
-for line in reversed(range(1,size+1)):
-    print(f'{line}: {b.board[line]}')
+player_A = [[p_b,'a1'],[p_b,'b1'],[p_b,'c1']]
+player_B = [[p_w,'a3'],[p_w,'b3'],[p_w,'c3']]
 
 
- 
-b.place_item(p_b, 'A1')
+for piece, position in player_A:
+    b.place_item(piece, position)
 
-b.place_item(p_b, 'C1')
-b.place_item(p_w, 'b1')
+for piece, position in player_B:
+    b.place_item(piece, position)
 
 b.visualize()
 
