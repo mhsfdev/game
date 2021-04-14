@@ -95,7 +95,7 @@ class Board :
         else:
             raise ValueError(f'Position {position} is not free')
 
-    def visualize(self):
+    def show(self):
         """
         prints board in text mode
         """
