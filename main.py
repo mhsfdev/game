@@ -36,9 +36,14 @@ class Player:
             raise ValueError(f'Color {color} is not valid')
         else:
             self.color = color
+            
+            if self.color.lower() == 'b':
+                self.color_repr =  'X'
+            elif self.color.lower() =='w':
+                self.color_repr =  'O'            
     
     def __repr__(self):
-        return self.name
+        return (f'{self.name} playing {self.color_repr}')
     
     def set_piece(self, positions, piece):
         try:
@@ -48,6 +53,9 @@ class Player:
 
         for position in positions:
             self.pieces[position]= piece
+    
+    def his_position(self,position):
+        return position in self.pieces.keys()
     
     
 
@@ -81,29 +89,46 @@ turn = 1
 b.visualize()
 while True:
     playing_player = turn%2
+    opposing_player = (playing_player+1)%2
     
     try: # taking move to do
         from_position, to_position =  input(f'whats your next move {players[playing_player]}? ').split(',')
     except ValueError:
         break
+    
     from_position, to_position = from_position.strip(), to_position.strip() # stripped of unneccessary blanks
-    
-    
+
+    if not players[playing_player].his_position(from_position):
+        print (f'You do not have piece on position {from_position}')
+        continue
+
+    moving_piece = b.get_item(from_position)
+
     if b.is_free(to_position): # if destination is free, move i done, turn is completed
         b.move(from_position, to_position)
-        turn +=1
-        # make changes in players sets
-    else:
-        piece_out = b.get_item(to_position) # if destination is taken by friendly piece
-        if b.get_item(from_position).color == piece_out.color:
+        
+        
+        del players[playing_player].pieces[from_position]
+        players[playing_player].pieces[to_position] = moving_piece
+    
+    else: #  taking the piece or 
+        # if destination is taken by friendly piece
+        if b.get_item(to_position).color == moving_piece.color:
             print('you fool, there is your piece!! Again')
             continue # turn is not completed 
+        
+        print (f'Player {players[opposing_player]} looses piece on {to_position}') # little info
+        del players[opposing_player].pieces[to_position] # deletion from the players set
+        del players[playing_player].pieces[from_position]
+        players[playing_player].pieces[to_position] = moving_piece
 
         b.move(from_position, to_position)
 
     b.visualize()
-    print(player_A)
-    print(player_B)
+    turn += 1
+    print(player_A.pieces)
+    print(player_B.pieces)
+    
 
 
 
