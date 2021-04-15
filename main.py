@@ -21,12 +21,30 @@ class Piece:
 
         return self.color == piece.color
 
-        
+      
 
 class Pawn(Piece):
-    pass
-class Player:
+    def within_reach(self,x,y):
+        if self.color == 'b':
+            x, y = x*-1, y*-1
+        
+        if x==0 and y == 1:
+            return ('move')
+        elif x == 1 and abs(y)==1 :
+            return ('take')
+        else :
+            return False
+    
 
+
+class Player:
+    """
+    Player collects data on player
+    creates dictionary of posiitons(key) and pieces(values) where pieces of the game are kept and evaluated for game result /valid moves, existence of pieces to be played with
+    args :
+        name:name of the Player
+        color :black or white
+    """
     def __init__(self, name, color):
         self.name = name
         self.pieces = {} 
@@ -57,7 +75,20 @@ class Player:
     def his_position(self,position):
         return position in self.pieces.keys()
     
-    
+def vector(board, from_position, to_position):
+    try:
+        type(board) == Board
+    except TypeError:
+        return (0,0)
+
+    from_file, from_rank = board._parse_position(from_position)
+    to_file, to_rank = board._parse_position(to_position)
+        #compute vector as Tuple(number of field in forward direction, sideways direction)
+    files, _ = board._board_plan()
+    v_sideways = files.find(to_file)-files.find(from_file)
+    v_ahead = to_rank - from_rank
+   
+    return v_ahead,v_sideways
 
 
 
@@ -72,9 +103,9 @@ def main():
     player_A = Player('Hugo','b')
     player_B = Player('Elvis','w')
 
-    player_A.set_piece(['a1','b1','c1'], p_b)
+    player_A.set_piece(['a3','b3','c3'], p_b)
 
-    player_B.set_piece(['a3','b3','c3'], p_w)
+    player_B.set_piece(['a1','b1','c1'], p_w)
     players = [player_A,player_B]
 
     for position,piece in player_A.pieces.items():
@@ -92,10 +123,15 @@ def main():
         
         try: # taking move to do
             from_position, to_position =  input(f'whats your next move {players[playing_player]}? ').split(',')
+            from_position, to_position = from_position.strip(), to_position.strip() # stripped of unneccessary blanks
         except ValueError:
             break
-        
-        from_position, to_position = from_position.strip(), to_position.strip() # stripped of unneccessary blanks
+                
+        move_vector = vector(b, from_position, to_position)
+
+        if move_vector == (0,0):
+            print ('move somewhere else')
+            continue
 
         if not players[playing_player].his_position(from_position):
             print (f'You do not have piece on position {from_position}')
@@ -123,7 +159,8 @@ def main():
         print(player_B.name, player_B.pieces)
 
 
-main()
+if __name__ == '__main__':
+    main()
         
 
 

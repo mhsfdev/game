@@ -130,8 +130,6 @@ class Board :
         checks to position to be on the board, within reach of the Piece
         type of the movement - push or take
         """
-        def _within_reach(piece):# inner method deciding if new place is in the reach
-            return True
         
         from_file, from_rank = self._parse_position(from_position)
         to_file, to_rank = self._parse_position(to_position)
@@ -146,9 +144,7 @@ class Board :
         
         _item = self.board[from_rank][from_file]
 
-        if _within_reach(_item):
-            self.board[from_rank][from_file]=None
-            self.board[to_rank][to_file]=_item
-            return(f'move completed with move vector : {vector}')
-        else:
-            return(f'move out of reach for the piece on {from_position} position')
+      
+        self.board[from_rank][from_file]=None
+        self.board[to_rank][to_file]=_item
+        
