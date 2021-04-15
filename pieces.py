@@ -23,8 +23,13 @@ class Piece:
 
 class Pawn(Piece):
     def within_reach(self,x,y):
+        """
+        returns False if vector of movement is out of reach for the Piece
+        Args:
+            vector of the move 
+        """
         if self.color == 'b':
-            x, y = x*-1, y*-1
+            x, y = x*-1, y*-1 # for black player playing down the vector is turned by 180 degrees
         
         if x==0 and y == 1:
             return ('move')
