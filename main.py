@@ -2,9 +2,6 @@ from board import Board
 from pieces import Pawn
 from player import Player
 
-
-
-    
 def vector(board, from_position, to_position):
     try:
         type(board) == Board
@@ -19,8 +16,6 @@ def vector(board, from_position, to_position):
     v_ahead = to_rank - from_rank
    
     return v_ahead,v_sideways
-
-
 
 
 def main():        
