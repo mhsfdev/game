@@ -147,4 +147,15 @@ class Board :
       
         self.board[from_rank][from_file]=None
         self.board[to_rank][to_file]=_item
+    
+    def vector(self, from_position, to_position):
+        
+        from_file, from_rank = self._parse_position(from_position)
+        to_file, to_rank = self._parse_position(to_position)
+            #compute vector as Tuple(number of field in forward direction, sideways direction)
+        files, _ = self._board_plan()
+        v_sideways = files.find(to_file)-files.find(from_file)
+        v_ahead = to_rank - from_rank
+    
+        return v_ahead,v_sideways
         

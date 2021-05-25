@@ -1,9 +1,9 @@
 class Piece:
     def __init__(self, color = 'b'):
-        self.color = color
+        
         if color.lower() not in 'bw':
             raise ValueError(f'Color {color} is not supported')
-      
+        self.color = color
         
     
     def __repr__(self):
