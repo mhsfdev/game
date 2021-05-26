@@ -2,6 +2,9 @@ from board import Board
 from pieces import Pawn
 from player import Player
 
+
+ 
+
 def main():        
 
     size = 3
@@ -35,40 +38,28 @@ def main():
             from_position, to_position = from_position.strip(), to_position.strip() # stripped of unneccessary blanks
         except ValueError:
             break
+             
                 
-        move_vector = b.vector(from_position, to_position)
-
-        if move_vector == (0,0):
-            print ('move somewhere else')
-            continue
-
-         
         if not players[playing_player].his_position(from_position):
             print (f'You do not have piece on position {from_position}')
             continue
 
-        moving_piece = b.get_item(from_position)
-        """ 
-        incorporate withing reach
-        """
-        if not b.is_free(to_position):  
-            # if destination is taken by friendly piece
-            if b.get_item(to_position).color == moving_piece.color:
-                print('you fool, there is your piece!! Again')
-                continue # turn is not completed 
-            
-            print (f'Player {players[opposing_player]} looses piece on {to_position}') # little info
-            del players[opposing_player].pieces[to_position] # deletion from the players set
+        if b.is_valid(from_position, to_position):
+             
+            if to_position in players[opposing_player].pieces.keys() :
+                del players[opposing_player].pieces[to_position] # deletion from the players set
 
-        del players[playing_player].pieces[from_position]
-        players[playing_player].pieces[to_position] = moving_piece
+            del players[playing_player].pieces[from_position]
+            players[playing_player].pieces[to_position] = b.get_item(from_position)
 
-        b.move(from_position, to_position)
+            b.move(from_position, to_position)
 
-        b.show()
-        turn += 1
-        print(player_A.name, player_A.pieces)
-        print(player_B.name, player_B.pieces)
+            b.show()
+            turn += 1
+            print(player_A.name, player_A.pieces)
+            print(player_B.name, player_B.pieces)
+        else :
+            print('not valid move , buddy')
 
 
 if __name__ == '__main__':

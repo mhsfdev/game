@@ -158,4 +158,24 @@ class Board :
         v_ahead = to_rank - from_rank
     
         return v_ahead,v_sideways
+    
+    def is_valid(self,from_pos, to_pos):
+   
+        move_vector = self.vector(from_pos, to_pos)
+
+        if move_vector == (0,0):
+            print ('move somewhere else')
+            return False
+    
+        piece_to_move = self.get_item(from_pos)
+        if piece_to_move.within_reach(*move_vector) == 'move' and self.is_free(to_pos):
+            return True # is within reach and position to is free
+    
+        elif piece_to_move.within_reach(*move_vector) == 'take' and (
+            not piece_to_move.same_color(self.get_item(to_pos)) and not self.is_free(to_pos)
+            ):
+            return True # if within take reach and position to is occupied by opposing color piece
+    
+        else:
+            return False
         
