@@ -7,7 +7,7 @@ from player import Player
 
 def main():        
 
-    size = 3
+    size = 5
     b=Board(size)
     p_b = Pawn('b')
     p_w = Pawn('w')
@@ -44,15 +44,17 @@ def main():
             print (f'You do not have piece on position {from_position}')
             continue
 
-        if b.is_valid(from_position, to_position):
-             
-            if to_position in players[opposing_player].pieces.keys() :
+        moving_piece = b.get_item(from_position)
+
+        move = b.move(from_position, to_position)
+
+        if move in ('take', 'push') : # in case of valid move
+
+            if move == 'take': # take the oponents piece away
                 del players[opposing_player].pieces[to_position] # deletion from the players set
-
-            del players[playing_player].pieces[from_position]
-            players[playing_player].pieces[to_position] = b.get_item(from_position)
-
-            b.move(from_position, to_position)
+            
+            del players[playing_player].pieces[from_position] # delete record on from position
+            players[playing_player].pieces[to_position] = moving_piece # create record on to position
 
             b.show()
             turn += 1

@@ -123,59 +123,54 @@ class Board :
 
     def move(self, from_position, to_position):
 
-        """ 
-        method processing the movement of the Piece on the boar.
-
-        checks movement abilities of the Piece on the from position
-        checks to position to be on the board, within reach of the Piece
-        type of the movement - push or take
-        """
-        
         from_file, from_rank = self._parse_position(from_position)
         to_file, to_rank = self._parse_position(to_position)
-        #compute vector as Tuple(number of field in forward direction, sideways direction)
+        
         files, _ = self._board_plan()
+
         v_sideways = files.find(to_file)-files.find(from_file)
         v_ahead = to_rank - from_rank
-        vector =(v_ahead,v_sideways)
 
         if self.board[from_rank][from_file] == None:
             raise ValueError(f'there is nothing on {from_position} position on the board')
         
         _item = self.board[from_rank][from_file]
 
-      
-        self.board[from_rank][from_file]=None
-        self.board[to_rank][to_file]=_item
-    
-    def vector(self, from_position, to_position):
-        
-        from_file, from_rank = self._parse_position(from_position)
-        to_file, to_rank = self._parse_position(to_position)
-            #compute vector as Tuple(number of field in forward direction, sideways direction)
-        files, _ = self._board_plan()
-        v_sideways = files.find(to_file)-files.find(from_file)
-        v_ahead = to_rank - from_rank
-    
-        return v_ahead,v_sideways
-    
-    def is_valid(self,from_pos, to_pos):
-   
-        move_vector = self.vector(from_pos, to_pos)
+        if _item.color == 'b' : 
+            v_ahead, v_sideways = v_ahead * -1, v_sideways * -1
+       
+        move_vector = (v_ahead, v_sideways)
 
         if move_vector == (0,0):
-            print ('move somewhere else')
+            print ('move somewhere')
             return False
+
+        
+        
+        
+
+        
+
+        
+        if _item.within_reach(*move_vector) == 'move' and self.is_free(to_position):
+
+            self.board[from_rank][from_file]=None
+            self.board[to_rank][to_file]=_item
+            return 'push' # is within reach and position to is free
     
-        piece_to_move = self.get_item(from_pos)
-        if piece_to_move.within_reach(*move_vector) == 'move' and self.is_free(to_pos):
-            return True # is within reach and position to is free
-    
-        elif piece_to_move.within_reach(*move_vector) == 'take' and (
-            not piece_to_move.same_color(self.get_item(to_pos)) and not self.is_free(to_pos)
+        elif _item.within_reach(*move_vector) == 'take' and (
+            not _item.same_color(self.get_item(to_position)) and not self.is_free(to_position)
             ):
-            return True # if within take reach and position to is occupied by opposing color piece
+
+            self.board[from_rank][from_file]=None
+            self.board[to_rank][to_file]=_item
+            return 'take' # if within take reach and position to is occupied by opposing color piece
     
         else:
             return False
+
+      
+        
+    
+    
         
