@@ -4,6 +4,7 @@ module containing Board class
 and some useful functions
 """
 class Board :
+    MAX_SIZE = 8
     
     def __init__(self,size = None):
         """
@@ -13,13 +14,13 @@ class Board :
         """
         if size>8:
             raise ValueError('Board max is 8')
-        self.size = size
+        self._size = size
 
         files, ranks = self._board_plan() 
         self.board = [None] + [{letter : None for letter in files}  for _ in ranks] 
 
     def _board_plan(self): #creates file and rank designations as iterables
-        return ("ABCDEFGH"[:self.size],range(1,self.size+1))
+        return ("ABCDEFGH"[:self._size],range(1,self._size+1))
 
     def _parse_position(self, position): # filerank notation A1
         """
@@ -101,7 +102,7 @@ class Board :
         """
         files , ranks = self._board_plan()
         print()
-        print(f'Board {self.size}x{self.size}')
+        print(f'Board {self._size}x{self._size}')
         print('  +','-'*(len(files)*2+1),'+', sep='' )  #topline
 
         for rank in reversed(ranks):

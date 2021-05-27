@@ -31,6 +31,8 @@ def main():
         playing_player = turn % 2
         opposing_player = (playing_player + 1) % 2
 
+        b.
+
         try:  # taking move to do
             from_position, to_position = input(
                 f'whats your next move {players[playing_player]}? ').split(',')
