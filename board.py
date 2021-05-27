@@ -133,29 +133,23 @@ class Board :
 
         if self.board[from_rank][from_file] == None:
             raise ValueError(f'there is nothing on {from_position} position on the board')
+            return False
         
         _item = self.board[from_rank][from_file]
 
-        if _item.color == 'b' : 
-            v_ahead, v_sideways = v_ahead * -1, v_sideways * -1
-       
+              
         move_vector = (v_ahead, v_sideways)
 
         if move_vector == (0,0):
             print ('move somewhere')
             return False
 
-        
-        
-        
-
-        
-
-        
+         
         if _item.within_reach(*move_vector) == 'move' and self.is_free(to_position):
 
             self.board[from_rank][from_file]=None
             self.board[to_rank][to_file]=_item
+            print (f'move vector is :{v_ahead}, {v_sideways}, type PUSH')
             return 'push' # is within reach and position to is free
     
         elif _item.within_reach(*move_vector) == 'take' and (
@@ -164,9 +158,11 @@ class Board :
 
             self.board[from_rank][from_file]=None
             self.board[to_rank][to_file]=_item
+            print (f'move vector is :{v_ahead}, {v_sideways}, type TAKE')
             return 'take' # if within take reach and position to is occupied by opposing color piece
     
         else:
+            print (f'move vector is :{v_ahead}, {v_sideways}, type FALSE')
             return False
 
       

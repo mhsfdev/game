@@ -61,6 +61,7 @@ def main():
             print(player_A.name, player_A.pieces)
             print(player_B.name, player_B.pieces)
         else :
+            
             print('not valid move , buddy')
 
 
