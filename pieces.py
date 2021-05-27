@@ -22,7 +22,7 @@ class Piece:
         return self._color=='b'
     
     def is_white(self):
-        return self._same_clorocolor=='w'
+        return self._color=='w'
 
     @property
     def color(self):
