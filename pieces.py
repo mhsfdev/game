@@ -54,3 +54,5 @@ class Pawn(Piece):
         else :
             return False
     
+    def has_legal_move():
+        pass
