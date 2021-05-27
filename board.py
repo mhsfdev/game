@@ -132,8 +132,8 @@ class Board :
         to_rank = from_rank +move_vector[0]
 
         files, _ = self._board_plan()
-        file_seq = move_vector[1] + files.find(from_file)
-        to_file = files[file_seq]
+        file_ord = move_vector[1] + files.find(from_file)
+        to_file = files[file_ord]
 
         return (to_file+str(to_rank)) if self.is_on_board(str(to_rank)+to_file) else None 
 
