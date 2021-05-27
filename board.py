@@ -153,7 +153,7 @@ class Board :
             return 'push' # is within reach and position to is free
     
         elif _item.within_reach(*move_vector) == 'take' and (
-            not _item.same_color(self.get_item(to_position)) and not self.is_free(to_position)
+            not self.is_free(to_position) and not _item.same_color(self.get_item(to_position))
             ):
 
             self.board[from_rank][from_file]=None

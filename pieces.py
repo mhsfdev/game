@@ -16,7 +16,7 @@ class Piece:
         except AttributeError('not valid piece'):
             return False
 
-        return self.color == piece.color
+        return self._color == piece.color
     
     def is_black(self):
         return self._color=='b'
@@ -44,7 +44,7 @@ class Pawn(Piece):
         Args:
             vector of the move 
         """
-        if self.is_black:
+        if self.is_black():
             ahead, sideways = ahead*-1, sideways*-1 # for black player playing down the vector is turned by 180 degrees
         
         if ahead== 1 and sideways == 0:
