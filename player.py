@@ -35,3 +35,5 @@ class Player:
     
     def his_position(self,position):
         return position in self.pieces.keys()
+    
+    

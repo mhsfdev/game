@@ -122,6 +122,21 @@ class Board :
             print (' ',file,sep='', end='')
         print()
 
+    def create_position(self,from_position,move_vector=(0,0)):
+        """
+        returns to position from initial position and move vector
+        used in determining legal positions
+        to position must be on board
+        """
+        from_file, from_rank = self._parse_position(from_position)
+        to_rank = from_rank +move_vector[0]
+
+        files, _ = self._board_plan()
+        file_seq = move_vector[1] + files.find(from_file)
+        to_file = files[file_seq]
+
+        return (to_file+str(to_rank)) if self.is_on_board(str(to_rank)+to_file) else None 
+
     def move(self, from_position, to_position):
 
         from_file, from_rank = self._parse_position(from_position)
@@ -165,6 +180,8 @@ class Board :
         else:
             print (f'move vector is :{v_ahead}, {v_sideways}, type FALSE')
             return False
+
+    
 
       
         

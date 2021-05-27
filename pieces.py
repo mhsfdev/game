@@ -41,6 +41,7 @@ class Pawn(Piece):
     """
     future refactiorin / use dictionary to set legal moves and claim legal if in values and return key to indicate type of move
     """
+
     
     def within_reach(self,ahead,sideways):
         """

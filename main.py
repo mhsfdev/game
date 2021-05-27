@@ -2,6 +2,18 @@ from board import Board
 from pieces import Pawn
 from player import Player
 
+def has_legal_moves(board, player):
+    for position in player.pieces.keys(): # through all positions
+        piece = board.get_item(position)
+        for move in piece.legal_moves['move']:
+            pass
+        for take in piece.legal_moves['take']:
+            pass
+
+
+        
+
+
 
 
 def main():
@@ -27,11 +39,13 @@ def main():
 
     turn = 1
     b.show()
+    
+
     while True:
         playing_player = turn % 2
         opposing_player = (playing_player + 1) % 2
 
-        b.
+        
 
         try:  # taking move to do
             from_position, to_position = input(
