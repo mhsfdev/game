@@ -130,13 +130,18 @@ class Board :
         """
         from_file, from_rank = self._parse_position(from_position)
         to_rank = from_rank +move_vector[0]
+        if 0 > to_rank or to_rank > self._size:
+            return None
 
         files, _ = self._board_plan()
         file_ord = move_vector[1] + files.find(from_file)
+        
+        if 0 > file_ord or file_ord > self._size:
+            return None
         to_file = files[file_ord]
         to_position = to_file+str(to_rank) 
 
-        return to_position if self.is_on_board(to_position) else None 
+        return to_position if self.is_on_board(to_position) else None
 
     def move(self, from_position, to_position):
 
@@ -184,25 +189,40 @@ class Board :
 
 
     def has_legal_moves(self, *positions):
+        legal_moves = []
         for position in positions: # through all positions
             
             piece = self.get_item(position)
             for move in piece.legal_moves()['move']:
-                print(position,move)
+                
                 to_position = self.create_position(position,move)
                 if to_position == None:
+                    
                     continue
                 
                 if self.is_free(to_position):
 
-                    print ('move : ',move)
+                    
+                    legal_moves.append(to_position)
                 else:
-                    print (f'{move} is legal, but {to_position} is occupied' )
+                    pass
 
-                pass
+                
             for take in piece.legal_moves()['take']:
-                print ('take : ',take)
-                pass
+                
+                to_position = self.create_position(position,take)
+
+                if to_position == None:
+                    
+                    continue
+                if self.is_free(to_position) or piece.same_color(self.get_item(to_position)):
+                    continue
+                else:
+                    legal_moves.append(to_position)
+                    
+                
+        return legal_moves     
+        
     
 
       

@@ -14,7 +14,7 @@ player_B = Player('Elvis', 'w')
 
 player_A.set_piece(['a3', 'b3', 'c3'], p_b)
 
-player_B.set_piece(['a1', 'b2', 'c1'], p_w)
+player_B.set_piece(['a2', 'b2', 'c2'], p_w)
 players = [player_A, player_B]
 
 for position, piece in player_A.pieces.items():
@@ -26,9 +26,9 @@ for position, piece in player_B.pieces.items():
 turn = 1
 b.show()
 
-""""
+opposing_player = 0
 
-while True:
+while len(b.has_legal_moves(*players[opposing_player].pieces.keys())) != 0: #winning condition, opposing player has no valid moves
     playing_player = turn % 2
     opposing_player = (playing_player + 1) % 2
 
@@ -63,9 +63,10 @@ while True:
 
         b.show()
         turn += 1
-        print(player_A.name, player_A.pieces)
-        print(player_B.name, player_B.pieces)
+        
     else:
 
         print('not valid move , buddy')
-"""
+
+print (f'game over for player {players[playing_player]} he has not valid moves to make !!!' )
+
