@@ -136,7 +136,7 @@ class Board :
         files, _ = self._board_plan()
         file_ord = move_vector[1] + files.find(from_file)
         
-        if 0 > file_ord or file_ord > self._size:
+        if 0 > file_ord or file_ord > self._size-1:
             return None
         to_file = files[file_ord]
         to_position = to_file+str(to_rank) 

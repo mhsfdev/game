@@ -4,7 +4,7 @@ from player import Player
 
 
 
-size = 5
+size = 3
 b = Board(size)
 p_b = Pawn('b')
 p_w = Pawn('w')
@@ -26,9 +26,9 @@ for position, piece in player_B.pieces.items():
 turn = 1
 b.show()
 
-opposing_player = 0
 
-while len(b.has_legal_moves(*players[opposing_player].pieces.keys())) != 0: #winning condition, opposing player has no valid moves
+
+while len(b.has_legal_moves(*players[turn%2].pieces.keys())) != 0: #winning condition, opposing player has no valid moves
     playing_player = turn % 2
     opposing_player = (playing_player + 1) % 2
 
@@ -68,5 +68,5 @@ while len(b.has_legal_moves(*players[opposing_player].pieces.keys())) != 0: #win
 
         print('not valid move , buddy')
 
-print (f'game over for player {players[playing_player]} he has not valid moves to make !!!' )
+print (f'game over for player {players[players[turn%2]} he has not valid moves to make !!!' )
 
