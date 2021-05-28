@@ -134,8 +134,9 @@ class Board :
         files, _ = self._board_plan()
         file_ord = move_vector[1] + files.find(from_file)
         to_file = files[file_ord]
+        to_position = to_file+str(to_rank) 
 
-        return (to_file+str(to_rank)) if self.is_on_board(str(to_rank)+to_file) else None 
+        return to_position if self.is_on_board(to_position) else None 
 
     def move(self, from_position, to_position):
 
@@ -181,6 +182,27 @@ class Board :
             print (f'move vector is :{v_ahead}, {v_sideways}, type FALSE')
             return False
 
+
+    def has_legal_moves(self, *positions):
+        for position in positions: # through all positions
+            
+            piece = self.get_item(position)
+            for move in piece.legal_moves()['move']:
+                print(position,move)
+                to_position = self.create_position(position,move)
+                if to_position == None:
+                    continue
+                
+                if self.is_free(to_position):
+
+                    print ('move : ',move)
+                else:
+                    print (f'{move} is legal, but {to_position} is occupied' )
+
+                pass
+            for take in piece.legal_moves()['take']:
+                print ('take : ',take)
+                pass
     
 
       
