@@ -38,6 +38,11 @@ class Piece:
       
 
 class Pawn(Piece):
+    """
+    future refactiorin / use dictionary to set legal moves and claim legal if in values and return key to indicate type of move
+    """
+
+    
     def within_reach(self,ahead,sideways):
         """
         returns False if vector of movement is out of reach for the Piece
@@ -54,5 +59,17 @@ class Pawn(Piece):
         else :
             return False
     
-    def has_legal_move():
-        pass
+    def legal_moves(self): 
+        if self.is_white():
+            return {
+                'move' : [(1,0)], 
+                'take' : [(1,-1),(1,1)]
+
+            }
+            
+        else:
+             return {
+                'move' : [(-1,0)], 
+                'take' : [(-1,1),(-1,-1)]
+
+            }

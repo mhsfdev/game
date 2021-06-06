@@ -4,6 +4,7 @@ module containing Board class
 and some useful functions
 """
 class Board :
+    MAX_SIZE = 8
     
     def __init__(self,size = None):
         """
@@ -13,13 +14,13 @@ class Board :
         """
         if size>8:
             raise ValueError('Board max is 8')
-        self.size = size
+        self._size = size
 
         files, ranks = self._board_plan() 
         self.board = [None] + [{letter : None for letter in files}  for _ in ranks] 
 
     def _board_plan(self): #creates file and rank designations as iterables
-        return ("ABCDEFGH"[:self.size],range(1,self.size+1))
+        return ("ABCDEFGH"[:self._size],range(1,self._size+1))
 
     def _parse_position(self, position): # filerank notation A1
         """
@@ -101,7 +102,7 @@ class Board :
         """
         files , ranks = self._board_plan()
         print()
-        print(f'Board {self.size}x{self.size}')
+        print(f'Board {self._size}x{self._size}')
         print('  +','-'*(len(files)*2+1),'+', sep='' )  #topline
 
         for rank in reversed(ranks):
@@ -120,6 +121,27 @@ class Board :
         for file in files:
             print (' ',file,sep='', end='')
         print()
+
+    def create_position(self,from_position,move_vector=(0,0)):
+        """
+        returns to position from initial position and move vector
+        used in determining legal positions
+        to position must be on board
+        """
+        from_file, from_rank = self._parse_position(from_position)
+        to_rank = from_rank +move_vector[0]
+        if 0 > to_rank or to_rank > self._size:
+            return None
+
+        files, _ = self._board_plan()
+        file_ord = move_vector[1] + files.find(from_file)
+        
+        if 0 > file_ord or file_ord > self._size-1:
+            return None
+        to_file = files[file_ord]
+        to_position = to_file+str(to_rank) 
+
+        return to_position if self.is_on_board(to_position) else None
 
     def move(self, from_position, to_position):
 
@@ -164,6 +186,44 @@ class Board :
         else:
             print (f'move vector is :{v_ahead}, {v_sideways}, type FALSE')
             return False
+
+
+    def has_legal_moves(self, *positions):
+        legal_moves = []
+        for position in positions: # through all positions
+            
+            piece = self.get_item(position)
+            for move in piece.legal_moves()['move']:
+                
+                to_position = self.create_position(position,move)
+                if to_position == None:
+                    
+                    continue
+                
+                if self.is_free(to_position):
+
+                    
+                    legal_moves.append(to_position)
+                else:
+                    pass
+
+                
+            for take in piece.legal_moves()['take']:
+                
+                to_position = self.create_position(position,take)
+
+                if to_position == None:
+                    
+                    continue
+                if self.is_free(to_position) or piece.same_color(self.get_item(to_position)):
+                    continue
+                else:
+                    legal_moves.append(to_position)
+                    
+                
+        return legal_moves     
+        
+    
 
       
         
