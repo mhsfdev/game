@@ -4,6 +4,7 @@ module containing Board class
 and some useful functions
 """
 class Board :
+    MAX_SIZE = 8
     
     def __init__(self,size = None):
         """
@@ -13,13 +14,13 @@ class Board :
         """
         if size>8:
             raise ValueError('Board max is 8')
-        self.size = size
+        self._size = size
 
         files, ranks = self._board_plan() 
         self.board = [None] + [{letter : None for letter in files}  for _ in ranks] 
 
     def _board_plan(self): #creates file and rank designations as iterables
-        return ("ABCDEFGH"[:self.size],range(1,self.size+1))
+        return ("ABCDEFGH"[:self._size],range(1,self._size+1))
 
     def _parse_position(self, position): # filerank notation A1
         """
@@ -101,7 +102,7 @@ class Board :
         """
         files , ranks = self._board_plan()
         print()
-        print(f'Board {self.size}x{self.size}')
+        print(f'Board {self._size}x{self._size}')
         print('  +','-'*(len(files)*2+1),'+', sep='' )  #topline
 
         for rank in reversed(ranks):
@@ -121,61 +122,111 @@ class Board :
             print (' ',file,sep='', end='')
         print()
 
+    def create_position(self,from_position,move_vector=(0,0)):
+        """
+        returns to position from initial position and move vector
+        used in determining legal positions
+        to position must be on board
+        """
+        from_file, from_rank = self._parse_position(from_position)
+        to_rank = from_rank +move_vector[0]
+        if 0 > to_rank or to_rank > self._size:
+            return None
+
+        files, _ = self._board_plan()
+        file_ord = move_vector[1] + files.find(from_file)
+        
+        if 0 > file_ord or file_ord > self._size-1:
+            return None
+        to_file = files[file_ord]
+        to_position = to_file+str(to_rank) 
+
+        return to_position if self.is_on_board(to_position) else None
+
     def move(self, from_position, to_position):
 
-        """ 
-        method processing the movement of the Piece on the boar.
-
-        checks movement abilities of the Piece on the from position
-        checks to position to be on the board, within reach of the Piece
-        type of the movement - push or take
-        """
-        
         from_file, from_rank = self._parse_position(from_position)
         to_file, to_rank = self._parse_position(to_position)
-        #compute vector as Tuple(number of field in forward direction, sideways direction)
+        
         files, _ = self._board_plan()
+
         v_sideways = files.find(to_file)-files.find(from_file)
         v_ahead = to_rank - from_rank
-        vector =(v_ahead,v_sideways)
 
         if self.board[from_rank][from_file] == None:
             raise ValueError(f'there is nothing on {from_position} position on the board')
+            return False
         
         _item = self.board[from_rank][from_file]
 
-      
-        self.board[from_rank][from_file]=None
-        self.board[to_rank][to_file]=_item
-    
-    def vector(self, from_position, to_position):
-        
-        from_file, from_rank = self._parse_position(from_position)
-        to_file, to_rank = self._parse_position(to_position)
-            #compute vector as Tuple(number of field in forward direction, sideways direction)
-        files, _ = self._board_plan()
-        v_sideways = files.find(to_file)-files.find(from_file)
-        v_ahead = to_rank - from_rank
-    
-        return v_ahead,v_sideways
-    
-    def is_valid(self,from_pos, to_pos):
-   
-        move_vector = self.vector(from_pos, to_pos)
+              
+        move_vector = (v_ahead, v_sideways)
 
         if move_vector == (0,0):
-            print ('move somewhere else')
+            print ('move somewhere')
             return False
+
+         
+        if _item.within_reach(*move_vector) == 'move' and self.is_free(to_position):
+
+            self.board[from_rank][from_file]=None
+            self.board[to_rank][to_file]=_item
+            print (f'move vector is :{v_ahead}, {v_sideways}, type PUSH')
+            return 'push' # is within reach and position to is free
     
-        piece_to_move = self.get_item(from_pos)
-        if piece_to_move.within_reach(*move_vector) == 'move' and self.is_free(to_pos):
-            return True # is within reach and position to is free
-    
-        elif piece_to_move.within_reach(*move_vector) == 'take' and (
-            not piece_to_move.same_color(self.get_item(to_pos)) and not self.is_free(to_pos)
+        elif _item.within_reach(*move_vector) == 'take' and (
+            not self.is_free(to_position) and not _item.same_color(self.get_item(to_position))
             ):
-            return True # if within take reach and position to is occupied by opposing color piece
+
+            self.board[from_rank][from_file]=None
+            self.board[to_rank][to_file]=_item
+            print (f'move vector is :{v_ahead}, {v_sideways}, type TAKE')
+            return 'take' # if within take reach and position to is occupied by opposing color piece
     
         else:
+            print (f'move vector is :{v_ahead}, {v_sideways}, type FALSE')
             return False
+
+
+    def has_legal_moves(self, *positions):
+        legal_moves = []
+        for position in positions: # through all positions
+            
+            piece = self.get_item(position)
+            for move in piece.legal_moves()['move']:
+                
+                to_position = self.create_position(position,move)
+                if to_position == None:
+                    
+                    continue
+                
+                if self.is_free(to_position):
+
+                    
+                    legal_moves.append(to_position)
+                else:
+                    pass
+
+                
+            for take in piece.legal_moves()['take']:
+                
+                to_position = self.create_position(position,take)
+
+                if to_position == None:
+                    
+                    continue
+                if self.is_free(to_position) or piece.same_color(self.get_item(to_position)):
+                    continue
+                else:
+                    legal_moves.append(to_position)
+                    
+                
+        return legal_moves     
+        
+    
+
+      
+        
+    
+    
         
