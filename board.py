@@ -82,7 +82,7 @@ class Board :
 
        
 
-    def place_item(self, piece, position):
+    def __setitem__(self, position, piece):
         """ 
         Positions piece on the designated position
         args :
@@ -90,10 +90,8 @@ class Board :
             position = file, rank notation 'A1'
         """
         file, rank = self._parse_position(position)
-        if self.is_free(position):
-            self.board[rank][file] = piece # in datastructure is the board transposed 
-        else:
-            raise ValueError(f'Position {position} is not free')
+        self.board[rank][file] = piece # in datastructure is the board transposed 
+  
 
     def show(self):
         """

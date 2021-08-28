@@ -1,5 +1,5 @@
 from board import Board
-from pieces import Pawn
+from pieces import Pawn, Piece
 from player import Player
 
 
