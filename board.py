@@ -61,9 +61,9 @@ class Board :
         returns True if position on Board is not None = taken by object
         arg - posiiton in filerank notation
         """
-        
+        file, rank = self._parse_position(position)
                 
-        return self._board[position] == None
+        return self._board[rank][file] == None
             
     
     def __getitem__(self, position):
