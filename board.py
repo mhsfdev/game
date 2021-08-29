@@ -36,6 +36,7 @@ class Board :
         boolean, checks if position is on the board
         args:
           string / position in filerank notation
+          also checks for correct input
         """
         files, ranks = self._board_plan()
         rank_text = position[1]
@@ -56,14 +57,14 @@ class Board :
         
         return True
     
+    
     def is_free(self, position):
         """ boolean
         returns True if position on Board is not None = taken by object
         arg - posiiton in filerank notation
         """
-        file, rank = self._parse_position(position)
-                
-        return self._board[rank][file] == None
+                      
+        return self[position]== None
             
     
     def __getitem__(self, position):
@@ -72,10 +73,9 @@ class Board :
         if there is nothing, method returns None
         """
         file, rank = self._parse_position(position)
-        if not self.is_free(position):
-            return self._board[rank][file]
-        else:
-            return None
+        
+        return self._board[rank][file]
+       
 
        
 
