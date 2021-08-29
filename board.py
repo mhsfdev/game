@@ -98,9 +98,9 @@ class Board :
         print(f'Board {self._size}x{self._size}')
         print('  +','-'*(len(files)*2+1),'+', sep='' )  #topline
 
-        for rank in reversed(ranks):
+        for rank in reversed(self._ranks):
             print (rank,'| ', end = '')
-            for file in files:
+            for file in self._files:
                
                 if self._board[rank][file] == None:
                     print ('  ',end = '')
@@ -109,7 +109,7 @@ class Board :
 
             print('|') #right line
         
-        print('  +','-'*(len(files)*2+1),'+', sep='' )  #bottomline
+        print('  +','-'*(len(self._files)*2+1),'+', sep='' )  #bottomline
         print('   ', end='')
         for file in files:
             print (' ',file,sep='', end='')
@@ -146,11 +146,11 @@ class Board :
         v_sideways = self._files.find(to_file)-self._files.find(from_file)
         v_ahead = to_rank - from_rank
 
-        if self._board[from_rank][from_file] == None:
+        if self[from_position] == None:
             raise ValueError(f'there is nothing on {from_position} position on the board')
             return False
         
-        _item = self._board[from_rank][from_file]
+        _item = self[from_position]
 
               
         move_vector = (v_ahead, v_sideways)
@@ -162,17 +162,17 @@ class Board :
          
         if _item.within_reach(*move_vector) == 'move' and self.is_free(to_position):
 
-            self._board[from_position]=None
-            self._board[to_position]=_item
+            self[from_position]=None
+            self[to_position]=_item
             print (f'move vector is :{v_ahead}, {v_sideways}, type PUSH')
             return 'push' # is within reach and position to is free
     
         elif _item.within_reach(*move_vector) == 'take' and (
-            not self.is_free(to_position) and not _item.same_color(self.get_item(to_position))
+            not self.is_free(to_position) and not _item.same_color(self[to_position])
             ):
 
-            self.board[from_position]=None
-            self.board[to_position]=_item
+            self[from_position]=None
+            self[to_position]=_item
             print (f'move vector is :{v_ahead}, {v_sideways}, type TAKE')
             return 'take' # if within take reach and position to is occupied by opposing color piece
     
@@ -185,7 +185,7 @@ class Board :
         legal_moves = []
         for position in positions: # through all positions
             
-            piece = self.get_item(position)
+            piece = self[position]
             for move in piece.legal_moves()['move']:
                 
                 to_position = self.create_position(position,move)
@@ -194,8 +194,6 @@ class Board :
                     continue
                 
                 if self.is_free(to_position):
-
-                    
                     legal_moves.append(to_position)
                 else:
                     pass
@@ -205,10 +203,10 @@ class Board :
                 
                 to_position = self.create_position(position,take)
 
-                if to_position == None:
+                if to_position == None: #??? dont get it??
                     
                     continue
-                if self.is_free(to_position) or piece.same_color(self.get_item(to_position)):
+                if self.is_free(to_position) or piece.same_color(self[to_position]):
                     continue
                 else:
                     legal_moves.append(to_position)
