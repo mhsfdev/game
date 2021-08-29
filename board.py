@@ -96,7 +96,7 @@ class Board :
         files , ranks = self._files, self._ranks 
         print()
         print(f'Board {self._size}x{self._size}')
-        print('  +','-'*(len(files)*2+1),'+', sep='' )  #topline
+        print('  +','-'*(self._size*2+1),'+', sep='' )  #topline
 
         for rank in reversed(self._ranks):
             print (rank,'| ', end = '')
@@ -109,7 +109,7 @@ class Board :
 
             print('|') #right line
         
-        print('  +','-'*(len(self._files)*2+1),'+', sep='' )  #bottomline
+        print('  +','-'*(self._size*2+1),'+', sep='' )  #bottomline
         print('   ', end='')
         for file in files:
             print (' ',file,sep='', end='')
@@ -120,11 +120,12 @@ class Board :
         returns to position from initial position and move vector
         used in determining legal positions
         to position must be on board
+        move vector(filesmovement, rankmovement)
         """
         from_file, from_rank = self._parse_position(from_position)
         to_rank = from_rank +move_vector[0]
         if 0 > to_rank or to_rank > self._size:
-            return None
+            raise ValueError
 
         files, _ = self._board_plan()
         file_ord = move_vector[1] + files.find(from_file)
@@ -134,27 +135,32 @@ class Board :
         to_file = files[file_ord]
         to_position = to_file+str(to_rank) 
 
-        return to_position if self.is_on_board(to_position) else None
+        if self.is_on_board(to_position):
+            return to_position
+        else:
+            raise ValueError('new position {to_position} is out of the board')
 
-    def move(self, from_position, to_position):
-
-        from_file, from_rank = self._parse_position(from_position)
-        to_file, to_rank = self._parse_position(to_position)
+    def _move_vector(self, position1, position2):
         
+        if (self.is_on_board(position1) and self.is_on_board(position2)) != True:
+            raise ValueError
         
-
+        from_file, from_rank = self._parse_position(position1)
+        to_file, to_rank = self._parse_position(position2)
+        
         v_sideways = self._files.find(to_file)-self._files.find(from_file)
         v_ahead = to_rank - from_rank
+        
+        return (v_ahead, v_sideways)
+
+    def move(self, from_position, to_position):
+        move_vector = self._move_vector(from_position, to_position)
 
         if self[from_position] == None:
             raise ValueError(f'there is nothing on {from_position} position on the board')
-            return False
-        
+            
         _item = self[from_position]
-
-              
-        move_vector = (v_ahead, v_sideways)
-
+        
         if move_vector == (0,0):
             print ('move somewhere')
             return False
@@ -164,7 +170,7 @@ class Board :
 
             self[from_position]=None
             self[to_position]=_item
-            print (f'move vector is :{v_ahead}, {v_sideways}, type PUSH')
+            print (f'move vector is :{move_vector}, type PUSH')
             return 'push' # is within reach and position to is free
     
         elif _item.within_reach(*move_vector) == 'take' and (
@@ -173,11 +179,11 @@ class Board :
 
             self[from_position]=None
             self[to_position]=_item
-            print (f'move vector is :{v_ahead}, {v_sideways}, type TAKE')
+            print (f'move vector is :{move_vector}, type TAKE')
             return 'take' # if within take reach and position to is occupied by opposing color piece
     
         else:
-            print (f'move vector is :{v_ahead}, {v_sideways}, type FALSE')
+            print (f'move vector is :{move_vector}, type FALSE')
             return False
 
 

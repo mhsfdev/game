@@ -50,11 +50,11 @@ class Pawn(Piece):
             vector of the move 
         """
         if self.is_black():
-            ahead, sideways = ahead*-1, sideways*-1 # for black player playing down the vector is turned by 180 degrees
+            ahead, sideways = ahead * -1, sideways * -1 # for black player playing down the vector is turned by 180 degrees
         
-        if ahead== 1 and sideways == 0:
+        if ahead == 1 and sideways == 0:
             return ('move')
-        elif ahead == 1 and abs(sideways)==1 :
+        elif ahead == 1 and abs(sideways) == 1 :
             return ('take')
         else :
             return False
