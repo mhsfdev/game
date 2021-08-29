@@ -15,8 +15,8 @@ class Board :
             raise ValueError('Board max is 8')
         self.size = size
 
-        files, ranks = self._board_plan() 
-        self._board = [None] + [{letter : None for letter in files}  for _ in ranks] 
+        self._files, self._ranks = self._board_plan() 
+        self._board = [None] + [{letter : None for letter in self._files}  for _ in self._ranks] 
 
     def _board_plan(self): #creates file and rank designations as iterables
         return ("ABCDEFGH"[:self.size],range(1,self.size+1))
@@ -26,6 +26,7 @@ class Board :
         checks if position is on the board and returns tuple (File, rank)
         args = position in filerank notation
         """
+        
         if self.is_on_board(position): 
             return  position.upper()[0],int(position[-1])
         else:
@@ -33,12 +34,12 @@ class Board :
     
     def is_on_board(self, position):
         """
-        boolean, checks if position is on the board
+        core method checking validity of position and if it is on board
+        boolean
         args:
           string / position in filerank notation
-          also checks for correct input
         """
-        files, ranks = self._board_plan()
+        
         rank_text = position[1]
         file = position.upper()[0] # parse file designator , make it upper in case lower case is used
         if len(position)!=2:
@@ -49,12 +50,9 @@ class Board :
         except ValueError :
             return False
         
-        if rank not in ranks:
+        if rank not in self._ranks or file not in self._files:
             return False
              
-        if file not in files :
-            return False
-        
         return True
     
     
@@ -77,8 +75,6 @@ class Board :
         return self._board[rank][file]
        
 
-       
-
     def __setitem__(self, position, piece):
         """ 
         Positions piece on the designated position
@@ -94,7 +90,9 @@ class Board :
         """
         prints board in text mode
         """
-        files , ranks = self._board_plan()
+        # refactor using self._files and self._ranks
+        
+        files , ranks = self._files, self._ranks 
         print()
         print(f'Board {self.size}x{self.size}')
         print('  +','-'*(len(files)*2+1),'+', sep='' )  #topline
@@ -121,9 +119,9 @@ class Board :
         from_file, from_rank = self._parse_position(from_position)
         to_file, to_rank = self._parse_position(to_position)
         
-        files, _ = self._board_plan()
+        
 
-        v_sideways = files.find(to_file)-files.find(from_file)
+        v_sideways = self._files.find(to_file)-self._files.find(from_file)
         v_ahead = to_rank - from_rank
 
         if self._board[from_rank][from_file] == None:
