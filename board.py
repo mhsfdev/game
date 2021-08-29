@@ -16,8 +16,8 @@ class Board :
             raise ValueError('Board max is 8')
         self._size = size
 
-        files, ranks = self._board_plan() 
-        self.board = [None] + [{letter : None for letter in files}  for _ in ranks] 
+        self._files, self._ranks = self._board_plan() 
+        self._board = [None] + [{letter : None for letter in self._files}  for _ in self._ranks] 
 
     def _board_plan(self): #creates file and rank designations as iterables
         return ("ABCDEFGH"[:self._size],range(1,self._size+1))
@@ -27,6 +27,7 @@ class Board :
         checks if position is on the board and returns tuple (File, rank)
         args = position in filerank notation
         """
+        
         if self.is_on_board(position): 
             return  position.upper()[0],int(position[-1])
         else:
@@ -34,11 +35,12 @@ class Board :
     
     def is_on_board(self, position):
         """
-        boolean, checks if position is on the board
+        core method checking validity of position and if it is on board
+        boolean
         args:
           string / position in filerank notation
         """
-        files, ranks = self._board_plan()
+        
         rank_text = position[1]
         file = position.upper()[0] # parse file designator , make it upper in case lower case is used
         if len(position)!=2:
@@ -49,41 +51,32 @@ class Board :
         except ValueError :
             return False
         
-        if rank not in ranks:
+        if rank not in self._ranks or file not in self._files:
             return False
              
-        if file not in files :
-            return False
-        
         return True
+    
     
     def is_free(self, position):
         """ boolean
         returns True if position on Board is not None = taken by object
         arg - posiiton in filerank notation
         """
-        
-        file, rank = self._parse_position(position)
-        
-        if self.board[rank][file] != None:
-            return False
-        else :
-            return True
+                      
+        return self[position]== None
+            
     
-    def get_item(self, position):
+    def __getitem__(self, position):
         """
         returns whatever is on the position (arg)on the board
         if there is nothing, method returns None
         """
         file, rank = self._parse_position(position)
-        if not self.is_free(position):
-            return self.board[rank][file]
-        else:
-            return None
-
+        
+        return self._board[rank][file]
        
 
-    def place_item(self, piece, position):
+    def __setitem__(self, position, piece):
         """ 
         Positions piece on the designated position
         args :
@@ -91,16 +84,16 @@ class Board :
             position = file, rank notation 'A1'
         """
         file, rank = self._parse_position(position)
-        if self.is_free(position):
-            self.board[rank][file] = piece # in datastructure is the board transposed 
-        else:
-            raise ValueError(f'Position {position} is not free')
+        self._board[rank][file] = piece # in datastructure is the board transposed 
+  
 
     def show(self):
         """
         prints board in text mode
         """
-        files , ranks = self._board_plan()
+        # refactor using self._files and self._ranks
+        
+        files , ranks = self._files, self._ranks 
         print()
         print(f'Board {self._size}x{self._size}')
         print('  +','-'*(len(files)*2+1),'+', sep='' )  #topline
@@ -109,10 +102,10 @@ class Board :
             print (rank,'| ', end = '')
             for file in files:
                
-                if self.board[rank][file] == None:
+                if self._board[rank][file] == None:
                     print ('  ',end = '')
                 else:
-                    print (self.board[rank][file],' ', sep='',end = '')
+                    print (self._board[rank][file],' ', sep='',end = '')
 
             print('|') #right line
         
@@ -148,16 +141,16 @@ class Board :
         from_file, from_rank = self._parse_position(from_position)
         to_file, to_rank = self._parse_position(to_position)
         
-        files, _ = self._board_plan()
+        
 
-        v_sideways = files.find(to_file)-files.find(from_file)
+        v_sideways = self._files.find(to_file)-self._files.find(from_file)
         v_ahead = to_rank - from_rank
 
-        if self.board[from_rank][from_file] == None:
+        if self._board[from_rank][from_file] == None:
             raise ValueError(f'there is nothing on {from_position} position on the board')
             return False
         
-        _item = self.board[from_rank][from_file]
+        _item = self._board[from_rank][from_file]
 
               
         move_vector = (v_ahead, v_sideways)
@@ -169,8 +162,8 @@ class Board :
          
         if _item.within_reach(*move_vector) == 'move' and self.is_free(to_position):
 
-            self.board[from_rank][from_file]=None
-            self.board[to_rank][to_file]=_item
+            self._board[from_position]=None
+            self._board[to_position]=_item
             print (f'move vector is :{v_ahead}, {v_sideways}, type PUSH')
             return 'push' # is within reach and position to is free
     
@@ -178,8 +171,8 @@ class Board :
             not self.is_free(to_position) and not _item.same_color(self.get_item(to_position))
             ):
 
-            self.board[from_rank][from_file]=None
-            self.board[to_rank][to_file]=_item
+            self.board[from_position]=None
+            self.board[to_position]=_item
             print (f'move vector is :{v_ahead}, {v_sideways}, type TAKE')
             return 'take' # if within take reach and position to is occupied by opposing color piece
     
