@@ -3,6 +3,9 @@ module containing Board class
 
 and some useful functions
 """
+from pieces import Piece
+import copy
+
 class Board :
     MAX_SIZE = 8
     
@@ -63,7 +66,7 @@ class Board :
         arg - posiiton in filerank notation
         """
                       
-        return self[position]== None
+        return self[position] == None
             
     
     def __getitem__(self, position):
@@ -85,7 +88,24 @@ class Board :
         """
         file, rank = self._parse_position(position)
         self._board[rank][file] = piece # in datastructure is the board transposed 
+    
+    def setup_pieces(self, positions = [], piece = None): #not tested!!!
   
+        """
+        sets piece on designated positions on all or nothing principle
+        """
+	 
+        if not isinstance(piece, Piece):
+            raise ValueError (f'item {piece} is not valid piece')
+          
+        
+        for position in positions:
+            if not self.is_on_board(position), corr :
+                raise ValueError(f'position{position} is not valid, none of {positions} will be set up')
+
+        for position in positions:
+            self[position] = piece
+
 
     def show(self):
         """
@@ -93,7 +113,7 @@ class Board :
         """
         # refactor using self._files and self._ranks
         
-        files , ranks = self._files, self._ranks 
+        
         print()
         print(f'Board {self._size}x{self._size}')
         print('  +','-'*(self._size*2+1),'+', sep='' )  #topline
@@ -111,11 +131,11 @@ class Board :
         
         print('  +','-'*(self._size*2+1),'+', sep='' )  #bottomline
         print('   ', end='')
-        for file in files:
+        for file in self._files:
             print (' ',file,sep='', end='')
         print()
 
-    def create_position(self,from_position,move_vector=(0,0)):
+    def calculate_position(self,from_position,move_vector=(0,0)):
         """
         returns to position from initial position and move vector
         used in determining legal positions
@@ -166,14 +186,14 @@ class Board :
             return False
 
          
-        if _item.within_reach(*move_vector) == 'move' and self.is_free(to_position):
+        if _item.within_reach(move_vector) == 'move' and self.is_free(to_position):
 
-            self[from_position]=None
-            self[to_position]=_item
+            self[from_position] = None
+            self[to_position] = _item
             print (f'move vector is :{move_vector}, type PUSH')
             return 'push' # is within reach and position to is free
     
-        elif _item.within_reach(*move_vector) == 'take' and (
+        elif _item.within_reach(move_vector) == 'take' and (
             not self.is_free(to_position) and not _item.same_color(self[to_position])
             ):
 
@@ -188,37 +208,42 @@ class Board :
 
 
     def has_legal_moves(self, *positions):
-        legal_moves = []
+        '''
+        generates set of positions reachable by legal move from positions sent as argument
+        '''
+        legal_positions_to_move = []
         for position in positions: # through all positions
             
             piece = self[position]
             for move in piece.legal_moves()['move']:
                 
-                to_position = self.create_position(position,move)
+                to_position = self.calculate_position(position,move)
                 if to_position == None:
                     
                     continue
                 
-                if self.is_free(to_position):
-                    legal_moves.append(to_position)
+                if self.is_free(to_position) and (to_position not in legal_positions_to_move):
+                    legal_positions_to_move.append(to_position)
                 else:
                     pass
 
                 
             for take in piece.legal_moves()['take']:
                 
-                to_position = self.create_position(position,take)
+                to_position = self.calculate_position(position,take)
 
                 if to_position == None: #??? dont get it??
                     
                     continue
                 if self.is_free(to_position) or piece.same_color(self[to_position]):
                     continue
+                elif (to_position not in legal_positions_to_move):
+                    legal_positions_to_move.append(to_position)
                 else:
-                    legal_moves.append(to_position)
+                    continue
                     
                 
-        return legal_moves     
+        return legal_positions_to_move
         
     
 

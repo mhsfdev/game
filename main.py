@@ -53,13 +53,10 @@ def main():
         if move in ('take', 'push'):  # in case of valid move
 
             if move == 'take':  # take the oponents piece away
-                del players[opposing_player].pieces[
-                    to_position]  # deletion from the players set
+                del players[opposing_player].pieces[to_position]  # deletion from the players set
 
-            del players[playing_player].pieces[
-                from_position]  # delete record on from position
-            players[playing_player].pieces[
-                to_position] = moving_piece  # create record on to position
+            del players[playing_player].pieces[from_position]  # delete record on from position
+            players[playing_player].pieces[to_position] = moving_piece  # create record on to position
 
             b.show()
             turn += 1
