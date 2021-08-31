@@ -3,6 +3,9 @@ module containing Board class
 
 and some useful functions
 """
+from pieces import Piece
+import copy
+
 class Board :
     MAX_SIZE = 8
     
@@ -63,7 +66,7 @@ class Board :
         arg - posiiton in filerank notation
         """
                       
-        return self[position]== None
+        return self[position] == None
             
     
     def __getitem__(self, position):
@@ -85,7 +88,24 @@ class Board :
         """
         file, rank = self._parse_position(position)
         self._board[rank][file] = piece # in datastructure is the board transposed 
+    
+    def setup_pieces(self, positions = [], piece = None): #not tested!!!
   
+        """
+        sets piece on designated positions on all or nothing principle
+        """
+	 
+        if not isinstance(piece, Piece):
+            raise ValueError (f'item {piece} is not valid piece')
+          
+        
+        for position in positions:
+            if not self.is_on_board(position) :
+                raise ValueError(f'position{position} is not valid, none of {positions} will be set up')
+
+        for position in positions:
+            self[position] = piece
+
 
     def show(self):
         """
@@ -93,14 +113,14 @@ class Board :
         """
         # refactor using self._files and self._ranks
         
-        files , ranks = self._files, self._ranks 
+        
         print()
         print(f'Board {self._size}x{self._size}')
-        print('  +','-'*(len(files)*2+1),'+', sep='' )  #topline
+        print('  +','-'*(self._size*2+1),'+', sep='' )  #topline
 
-        for rank in reversed(ranks):
+        for rank in reversed(self._ranks):
             print (rank,'| ', end = '')
-            for file in files:
+            for file in self._files:
                
                 if self._board[rank][file] == None:
                     print ('  ',end = '')
@@ -109,22 +129,23 @@ class Board :
 
             print('|') #right line
         
-        print('  +','-'*(len(files)*2+1),'+', sep='' )  #bottomline
+        print('  +','-'*(self._size*2+1),'+', sep='' )  #bottomline
         print('   ', end='')
-        for file in files:
+        for file in self._files:
             print (' ',file,sep='', end='')
         print()
 
-    def create_position(self,from_position,move_vector=(0,0)):
+    def calculate_position(self,from_position,move_vector=(0,0)):
         """
         returns to position from initial position and move vector
         used in determining legal positions
         to position must be on board
+        move vector(filesmovement, rankmovement)
         """
         from_file, from_rank = self._parse_position(from_position)
         to_rank = from_rank +move_vector[0]
         if 0 > to_rank or to_rank > self._size:
-            return None
+            raise ValueError
 
         files, _ = self._board_plan()
         file_ord = move_vector[1] + files.find(from_file)
@@ -134,87 +155,95 @@ class Board :
         to_file = files[file_ord]
         to_position = to_file+str(to_rank) 
 
-        return to_position if self.is_on_board(to_position) else None
+        if self.is_on_board(to_position):
+            return to_position
+        else:
+            raise ValueError('new position {to_position} is out of the board')
 
-    def move(self, from_position, to_position):
-
-        from_file, from_rank = self._parse_position(from_position)
-        to_file, to_rank = self._parse_position(to_position)
+    def _move_vector(self, position1, position2):
         
+        if (self.is_on_board(position1) and self.is_on_board(position2)) != True:
+            raise ValueError
         
-
+        from_file, from_rank = self._parse_position(position1)
+        to_file, to_rank = self._parse_position(position2)
+        
         v_sideways = self._files.find(to_file)-self._files.find(from_file)
         v_ahead = to_rank - from_rank
-
-        if self._board[from_rank][from_file] == None:
-            raise ValueError(f'there is nothing on {from_position} position on the board')
-            return False
         
-        _item = self._board[from_rank][from_file]
+        return (v_ahead, v_sideways)
 
-              
-        move_vector = (v_ahead, v_sideways)
+    def move(self, from_position, to_position):
+        move_vector = self._move_vector(from_position, to_position)
 
+        if self[from_position] == None:
+            raise ValueError(f'there is nothing on {from_position} position on the board')
+            
+        _item = self[from_position]
+        
         if move_vector == (0,0):
             print ('move somewhere')
             return False
 
          
-        if _item.within_reach(*move_vector) == 'move' and self.is_free(to_position):
+        if _item.within_reach(move_vector) == 'move' and self.is_free(to_position):
 
-            self._board[from_position]=None
-            self._board[to_position]=_item
-            print (f'move vector is :{v_ahead}, {v_sideways}, type PUSH')
+            self[from_position] = None
+            self[to_position] = _item
+            
             return 'push' # is within reach and position to is free
     
-        elif _item.within_reach(*move_vector) == 'take' and (
-            not self.is_free(to_position) and not _item.same_color(self.get_item(to_position))
+        elif _item.within_reach(move_vector) == 'take' and (
+            not self.is_free(to_position) and not _item.same_color(self[to_position])
             ):
 
-            self.board[from_position]=None
-            self.board[to_position]=_item
-            print (f'move vector is :{v_ahead}, {v_sideways}, type TAKE')
+            self[from_position]=None
+            self[to_position]=_item
+            
             return 'take' # if within take reach and position to is occupied by opposing color piece
     
         else:
-            print (f'move vector is :{v_ahead}, {v_sideways}, type FALSE')
+            
             return False
 
 
     def has_legal_moves(self, *positions):
-        legal_moves = []
+        '''
+        generates set of positions reachable by legal move from positions sent as argument
+        '''
+        legal_positions_to_move = []
         for position in positions: # through all positions
             
-            piece = self.get_item(position)
+            piece = self[position]
             for move in piece.legal_moves()['move']:
                 
-                to_position = self.create_position(position,move)
+                to_position = self.calculate_position(position,move)
                 if to_position == None:
                     
                     continue
                 
-                if self.is_free(to_position):
-
-                    
-                    legal_moves.append(to_position)
+                if self.is_free(to_position) and (to_position not in legal_positions_to_move):
+                    legal_positions_to_move.append(to_position)
                 else:
                     pass
 
                 
             for take in piece.legal_moves()['take']:
                 
-                to_position = self.create_position(position,take)
+                to_position = self.calculate_position(position,take)
 
-                if to_position == None:
+                if to_position == None: #??? dont get it??
                     
                     continue
-                if self.is_free(to_position) or piece.same_color(self.get_item(to_position)):
+                if self.is_free(to_position) or piece.same_color(self[to_position]):
                     continue
+                elif (to_position not in legal_positions_to_move):
+                    legal_positions_to_move.append(to_position)
                 else:
-                    legal_moves.append(to_position)
+                    continue
                     
                 
-        return legal_moves     
+        return legal_positions_to_move
         
     
 
