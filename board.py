@@ -100,7 +100,7 @@ class Board :
           
         
         for position in positions:
-            if not self.is_on_board(position), corr :
+            if not self.is_on_board(position) :
                 raise ValueError(f'position{position} is not valid, none of {positions} will be set up')
 
         for position in positions:
@@ -190,7 +190,7 @@ class Board :
 
             self[from_position] = None
             self[to_position] = _item
-            print (f'move vector is :{move_vector}, type PUSH')
+            
             return 'push' # is within reach and position to is free
     
         elif _item.within_reach(move_vector) == 'take' and (
@@ -199,11 +199,11 @@ class Board :
 
             self[from_position]=None
             self[to_position]=_item
-            print (f'move vector is :{move_vector}, type TAKE')
+            
             return 'take' # if within take reach and position to is occupied by opposing color piece
     
         else:
-            print (f'move vector is :{move_vector}, type FALSE')
+            
             return False
 
 

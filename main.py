@@ -12,9 +12,9 @@ def main():
     player_A = Player('Hugo', color = 'b')
     player_B = Player('Elvis', color = 'w')
 
-    player_A.set_piece(['a3', 'b3', 'c3'], p_b)
+    player_A.set_piece(['a3', 'c3'], p_b)
 
-    player_B.set_piece(['a1', 'b1', 'c1'], p_w)
+    player_B.set_piece(['a2', 'c1'], p_w)
     players = [player_A, player_B]
 
     for position, piece in player_A.pieces.items():
@@ -65,7 +65,7 @@ def main():
 
             print('not valid move , buddy')
 
-    print (f'game over for player {players[players[turn%2]]} he has not valid moves to make !!!' )
+    print (f'game over for player {players[turn%2]} he has not valid moves to make !!!' )
 
 
 if __name__ =='__main__':
