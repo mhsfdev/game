@@ -279,13 +279,15 @@ class PawnGameBoard(Board):
         """    
         return self._starting_positions_white
    
-    @property
-    def winning_positions_black(self):
-        return self._starting_positions_white
+    
+    def winning_positions(self, color=None):
+        if color in ['black','b', 'B']:
+            return self._starting_positions_white
    
-    @property
-    def winning_positions_white(self):
-        return self._starting_positions_black
+        elif color in ['white','w', 'W']:
+            return self._starting_positions_black
+        else :
+            return None
 
 
       
