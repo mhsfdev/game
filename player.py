@@ -22,7 +22,9 @@ class Player:
                 self.color_repr =  'O'            
     
     def __repr__(self):
-        return (f'{self.name} playing {self.color_repr}')
+        return(f'Player("{self.name}", color={self.color})')
+    def __str__(self):
+        return (f'{self.name} ({self.color_repr})')
     
     def set_piece(self, positions, piece):
         try:

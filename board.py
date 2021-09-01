@@ -22,6 +22,10 @@ class Board :
         self._files, self._ranks = self._board_plan() 
         self._board = [None] + [{letter : None for letter in self._files}  for _ in self._ranks] 
 
+    @property
+    def size(self):
+        return self._size
+    
     def _board_plan(self): #creates file and rank designations as iterables
         return ("ABCDEFGH"[:self._size],range(1,self._size+1))
 
@@ -245,7 +249,44 @@ class Board :
                 
         return legal_positions_to_move
         
+class PawnGameBoard(Board):
+
+    """
+    derived class from Board class specifying starting positions, winning positions on board and allowed pieces
+    """
+    def __init__(self, size = 3):
+        super().__init__(size)
+        self._starting_positions_black = [
+            char + str(self.size) for char in self._files # top row depending on size
+        ]
+        self._starting_positions_white = [
+            char + '1' for char in self._files # bottom row
+        ]
     
+        
+
+    @property
+    def starting_positions_black(self):
+        """
+        returns list of starting position for the black player
+        """    
+        return self._starting_positions_black
+   
+    @property
+    def starting_positions_white(self):
+        """
+        returns list of starting position for the white player
+        """    
+        return self._starting_positions_white
+   
+    @property
+    def winning_positions_black(self):
+        return self._starting_positions_white
+   
+    @property
+    def winning_positions_white(self):
+        return self._starting_positions_black
+
 
       
         
