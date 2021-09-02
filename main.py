@@ -14,9 +14,14 @@ def standardise_position(position):
 
 def main():
     
+    
+    #game setup
+    
     b = PawnGameBoard() # 3 is base value
     black_pawn = Pawn('b')
     white_pawn = Pawn('w')
+
+    #player setup
 
     player_black = Player('Hugo', color = black_pawn.color)
     player_white = Player('Elvis', color = white_pawn.color)
@@ -44,14 +49,19 @@ def main():
         opposing_player = (playing_player + 1) % 2
 
         
+        if players[playing_player].is_human:
+            try:  # taking move to do
+                from_position, to_position = input(
+                    f'whats your next move {players[playing_player]}? ').split(',')
+                from_position, to_position = from_position.strip(
+                ), to_position.strip()  # stripped of unneccessary blanks
+            except ValueError:
+                break
+        
+        else:
+            #create function to do legal move by CPU
+            pass
 
-        try:  # taking move to do
-            from_position, to_position = input(
-                f'whats your next move {players[playing_player]}? ').split(',')
-            from_position, to_position = from_position.strip(
-            ), to_position.strip()  # stripped of unneccessary blanks
-        except ValueError:
-            break
 
         from_position = standardise_position(from_position)
         to_position = standardise_position(to_position)

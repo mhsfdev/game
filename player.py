@@ -6,26 +6,37 @@ class Player:
         name:name of the Player
         color :black or white
     """
-    def __init__(self, name, color):
+    def __init__(self, name, color,human = True ):
+        
         self.name = name
-        self.pieces = {} 
+        self.pieces = {}
+        self._is_human = human
         """ enables to work with dictionary methods to retrieve Piece into gaming
         """
         if color not in ['b','w']:
             raise ValueError(f'Color {color} is not valid')
         else:
-            self.color = color
+            self._color = color
             
-            if self.color.lower() == 'b':
-                self.color_repr =  'X'
-            elif self.color.lower() =='w':
-                self.color_repr =  'O'            
+            if self._color.lower() == 'b':
+                self._color_repr =  'X'
+            elif self._color.lower() =='w':
+                self._color_repr =  'O'            
     
+    
+    @property
+    def is_human(self):
+        return self._is_human == True
+    @property
+    def is_CPU(self):
+        return self._is_human == False
+
     def __repr__(self):
-        return(f'Player("{self.name}", color={self.color})')
+        return(f'Player("{self.name}", human = {self.is_human}, color={self.color})')
     def __str__(self):
         return (f'{self.name} ({self.color_repr})')
     
+
     def set_piece(self, positions, piece):
         try:
             piece.color  = self.color
