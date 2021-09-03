@@ -213,12 +213,14 @@ class Board :
 
     def has_legal_moves(self, *positions):
         '''
-        generates set of positions reachable by legal move from positions sent as argument
+        generates dictionary of moves possible from positions sent as argument
         '''
-        legal_positions_to_move = []
+        positions_with_legal_move = {} #dictionary of positions and ist legal moves
         for position in positions: # through all positions
             
             piece = self[position]
+            legal_moves = []
+            # check for pushes
             for move in piece.legal_moves()['move']:
                 
                 to_position = self.calculate_position(position,move)
@@ -226,12 +228,13 @@ class Board :
                     
                     continue
                 
-                if self.is_free(to_position) and (to_position not in legal_positions_to_move):
-                    legal_positions_to_move.append(to_position)
+                if self.is_free(to_position) and (to_position not in legal_moves): # second contidion might be redundant
+                    legal_moves.append((position,to_position))
                 else:
                     pass
 
-                
+            # check for possible takes
+
             for take in piece.legal_moves()['take']:
                 
                 to_position = self.calculate_position(position,take)
@@ -241,13 +244,18 @@ class Board :
                     continue
                 if self.is_free(to_position) or piece.same_color(self[to_position]):
                     continue
-                elif (to_position not in legal_positions_to_move):
-                    legal_positions_to_move.append(to_position)
+                elif (to_position not in legal_moves): # redundant??
+                    legal_moves.append((position,to_position))
                 else:
                     continue
+
+            # assign possible moves to the position if there are some
+            if (len(legal_moves)!= 0): 
+                positions_with_legal_move[position]=legal_moves  
+
                     
                 
-        return legal_positions_to_move
+        return positions_with_legal_move
         
 class PawnGameBoard(Board):
 
