@@ -4,7 +4,7 @@ module containing Board class
 and some useful functions
 """
 from pieces import Piece
-import copy
+
 
 class Board :
     MAX_SIZE = 8
@@ -211,7 +211,7 @@ class Board :
             return False
 
 
-    def has_legal_moves(self, *positions):
+    def legal_moves(self, *positions):
         '''
         generates dictionary of moves possible from positions sent as argument
         '''

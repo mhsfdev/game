@@ -44,7 +44,7 @@ def main():
 
 
 
-    while len(b.has_legal_moves(*players[turn%2].pieces.keys())) != 0: #winning condition, opposing player has no valid moves
+    while len(b.legal_moves(*players[turn%2].pieces.keys())) != 0: #winning condition, opposing player has no valid moves
         playing_player = turn % 2
         opposing_player = (playing_player + 1) % 2
 
