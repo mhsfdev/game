@@ -177,7 +177,7 @@ class Board :
         
         return (v_ahead, v_sideways)
 
-    def move(self, from_position, to_position):
+    def move(self, from_position, to_position): 
         move_vector = self._move_vector(from_position, to_position)
 
         if self[from_position] == None:
@@ -211,7 +211,7 @@ class Board :
             return False
 
 
-    def legal_moves(self, *positions):
+    def legal_moves(self, *positions) -> dict:
         '''
         generates dictionary of moves possible from positions sent as argument
         '''

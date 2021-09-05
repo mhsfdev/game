@@ -1,3 +1,5 @@
+import random
+
 class Player:
     """
     Player collects data on player
@@ -48,7 +50,34 @@ class Player:
     
     def his_position(self,position):
         
-
         return position in self.pieces.keys()
+    
+    def make_move(self, board):
+        
+        try:
+            legal_moves = board.legal_moves(self.pieces.keys())
+        except ValueError:
+            return None
+        
+        return self._random_move(legal_moves)
+    
+    def _random_move(self,available_moves):
+        """
+        from available moves structured as dictionary when key is position and value is list availble moves in tuples 
+        """
+
+        try:
+            random_position = random.choice(list(available_moves.keys()))
+            return random.choice(available_moves[random_position])
+        except TypeError or ValueError:
+            raise TypeError('Not valid Structure')
+
+
+
+        
+
+        
+
+
         
     
