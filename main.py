@@ -4,8 +4,12 @@ from player import Player
 
 
 def standardise_position(position):
-    if len(position) !=2:
-            position = position[:2]
+    if len(position) >2:
+        position = position[:2]
+    elif len(position) <2:
+        return None
+
+
         
     file = position.upper()[0]
     rank = str(position[1])
@@ -56,7 +60,7 @@ def main():
                 from_position, to_position = from_position.strip(
                 ), to_position.strip()  # stripped of unneccessary blanks
             except ValueError:
-                break
+                continue
         
         else:
             #create function to do legal move by CPU
