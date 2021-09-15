@@ -23,7 +23,7 @@ def main():
 
     #player setup
 
-    player_black = Player('Hugo', color = black_pawn.color)
+    player_black = Player('Hugo', color = black_pawn.color, human = False)
     player_white = Player('Elvis', color = white_pawn.color)
 
     #setting up pieces for players    
@@ -60,7 +60,9 @@ def main():
         
         else:
             #create function to do legal move by CPU
-            pass
+            CPU_player_move = players[playing_player].make_move(b)
+            from_position, to_position = CPU_player_move
+            print(f'Player {players[playing_player]} moved {CPU_player_move}')
 
 
         from_position = standardise_position(from_position)

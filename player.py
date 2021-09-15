@@ -32,11 +32,20 @@ class Player:
     @property
     def is_CPU(self):
         return self._is_human == False
+    
+    @property
+    def color(self):
+        return self._color
+
+    @property
+    def positions(self):
+        return list(self.pieces.keys())
+    
 
     def __repr__(self):
         return(f'Player("{self.name}", human = {self.is_human}, color={self.color})')
     def __str__(self):
-        return (f'{self.name} ({self.color_repr})')
+        return (f'{self.name} ({self._color_repr})')
     
 
     def set_piece(self, positions, piece):
@@ -53,15 +62,16 @@ class Player:
         return position in self.pieces.keys()
     
     def make_move(self, board):
-        
+        if self.is_human: #available only for CPU player
+            raise TypeError('this function is availabe only for CPU players')
         try:
-            legal_moves = board.legal_moves(self.pieces.keys())
+            legal_moves = board.legal_moves(*self.positions)
         except ValueError:
             return None
         
-        return self._random_move(legal_moves)
+        return self._random_move(legal_moves) 
     
-    def _random_move(self,available_moves):
+    def _random_move(self,available_moves) -> tuple :
         """
         from available moves structured as dictionary when key is position and value is list availble moves in tuples 
         """

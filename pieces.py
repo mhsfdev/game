@@ -10,6 +10,7 @@ class Piece:
             return 'X'
         elif self._color.lower() =='w':
             return 'O'
+    
     def same_color(self, piece):
         try :
             piece.color
